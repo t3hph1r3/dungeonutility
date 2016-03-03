@@ -1,3 +1,7 @@
+//
+// Created by kevin hublou on 3/3/16.
+//
+
 #include <iostream>
 #include "dice.h"
 
