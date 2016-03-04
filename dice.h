@@ -1,13 +1,15 @@
 //
 // Created by k on 3/1/16.
+//edited by perry 3/4/16
 //
 
 #ifndef DUNGEONUTILITY_DICE_H
 #define DUNGEONUTILITY_DICE_H
 
 #include <iostream>
-#include <random>
-#include <chrono>
+#include <time.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 class Dice{
 
@@ -22,8 +24,8 @@ public:
 
 
 int Dice::roll(int sides) {
-    long result = random();
-    result = ((result % sides) + 1);
+	
+    int result = ((rand() % sides) + 1);
     if (result < 0) {result = result * -1;}
     return (int) result;
 }
