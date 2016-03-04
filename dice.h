@@ -14,7 +14,6 @@
 class Dice{
 
 private:
-
 public:
     static int roll(int sides);     //Generates random number between 1 and 'sides.'
     static int* rollMore(int times, int sides);     //Generates 'times' random numbers between 1 and 'sides.'
@@ -24,10 +23,12 @@ public:
 
 
 int Dice::roll(int sides) {
-	
+    int check = rand();
+    std::cout << check << std::endl;
+    if(check == 1804289383){srand((unsigned int) time(NULL));} //Checks for default rand() seed and reseeds.
     int result = ((rand() % sides) + 1);
     if (result < 0) {result = result * -1;}
-    return (int) result;
+    return result;
 }
 
 int* Dice::rollMore(int times, int sides){
