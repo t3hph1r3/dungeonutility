@@ -1,3 +1,6 @@
+#ifndef DICEUTILITY_ITEMS_H
+#define DICEUTILITY_ITEMS_H
+
 #include <iostream>
 #include <string>
 
@@ -295,3 +298,6 @@ int Weapon::getWeight() {
 bool Weapon::getRange() {
 	return isRanged;
 }
+
+
+#endif //DUNGEONUTILITY_ITEMS_H
