@@ -10,9 +10,9 @@
 
 using namespace std;
 
-class Item {
-	int numItems;
-	string itemName;
+class Item { //Superclass from which all other items inherit
+	int numItems; //all items have a specified number of items
+	string itemName; //all items have a name
 public:
 	Item(int n, string name) {
 		numItems = n;
@@ -27,11 +27,11 @@ public:
 	string getItemName() {
 		return itemName;
 	}
-	virtual string getValues() = 0;
+	virtual string getValues() = 0; //all items have getValues(), which prints out attributes/attribute description of the item
 };
 
-class Coinage : public Item {
-	int copper, silver, electrum, gold, platinum, sumCoin, valueInCopper;
+class Coinage : public Item { //class for in-game currency
+	int copper, silver, electrum, gold, platinum, sumCoin, valueInCopper; //D&D handbook specifies 5 different denominations of currency
 public:
 	Coinage(int n, string name, int c, int s, int e, int g, int p) : Item(n, name) {
 		copper = c;
@@ -40,7 +40,7 @@ public:
 		gold = g;
 		platinum = p;
 		sumCoin = copper + silver + electrum + gold + platinum;
-		valueInCopper = copper + silver * 10 + electrum * 50 + gold * 100 + platinum * 1000;
+		valueInCopper = copper + silver * 10 + electrum * 50 + gold * 100 + platinum * 1000; //in order to carry out trading, all coins are converted to lowest denomination, copper
 	}
 	void setValueInCopper() {
 		valueInCopper = copper + silver * 10 + electrum * 50 + gold * 100 + platinum * 1000;
@@ -201,10 +201,10 @@ public:
 	}
 };
 
-class Armor : public Item {
-	int cost, armorClass;
-	double weight;
-	bool stealth;
+class Armor : public Item { //class for character armor, reduces change of dealt damage
+	int cost, armorClass; //armorClass is always a constant, and sometimes an added Dexterity modifier. If attack value is greater than armorClass, the attack deals damage
+	double weight; //all pieces of armor have weight
+	bool stealth; //if armor has disadvantage in stealth (dexterity), value is false
 public:
 	Armor(int n, string name, int c, int AC, bool s, double w) : Item(n, name) {
 		cost = c;
@@ -239,11 +239,11 @@ public:
 	}
 };
 
-class Weapon : public Item {
+class Weapon : public Item { //items that deal damage
 	int cost;
-	double weight;
-	string damage;
-	bool isRanged;
+	double weight; //every weapon has a weight, if strength of a character not high enough for specified weight, character cannot wield weapon
+	string damage; //weapons deal specified type of damage that is also based on a specified dice roll
+	bool isRanged; //if true, the weapon is ranged (thrown/uses ammo), false otherwise
 public:
 	Weapon(int n, string name, int c, string d, double w, bool r) : Item(n, name) {
 		cost = c;
@@ -282,10 +282,10 @@ class Gear : public Item {
 	double weight;
 	string description;
 public:
-	Gear(int n, string name, int c, double w, string d) : Item(n, name) {
+	Gear(int n, string name, int c, double w, string d) : Item(n, name) { //class for items that do not fit above categories
 		cost = c;
 		weight = w;
-		description = d;
+		description = d; //holds description of item
 	}
 	void setDescription(string d) {
 		description = d;
@@ -304,39 +304,38 @@ public:
 	}
 };
 
-class ItemList {
-	vector<Item*> itemList;
+class ItemList { //vector that holds items and allows items to be added or removed. Each character has an ItemList
+	vector<Item*> itemList; //vector of Item pointers, to allow subclasses to be put in
 public:
-	void addItem(Item* i) {
+	void addItem(Item* i) { //adds items to vector
 		itemList.push_back(i);
 	}
-	void removeItem() {
+	void removeItem() { //removes items from vector
 		if(itemList.size() != 0) {
 			itemList.pop_back();
 		} else {
 			cout << "There are no items in inventory." << endl;
 		}
 	}
-	int getNumItems() {
+	int getNumItems() { //gets the number of different items in vector
 		return itemList.size();
 	}
-	void getValues() {
+	void getValues() { //prints out all values of each item in vector
 		for (int i = 0; i < itemList.size(); i++) {
 			cout << itemList[i]->getValues();
 		}
 	}
-	string getSpecificItem(string n) {
+	string getSpecificItem(string n) { //returns values of specified item (by item name) in vector
 		string str;
 		for (int i = 0; i < itemList.size(); i++) {
 			str = itemList[i]->getItemName();
 			if(str.compare(n) == 0) {
 				return itemList[i]->getValues();
-				//itemList[i]->getValues();
 			}
 		}
 		return "Item not found";
 	}
-	void removeSpecificItem(string n) {
+	void removeSpecificItem(string n) { //removes specified item (by item name) from vector
 		string str;
 		for (int i = 0; i < itemList.size(); i++) {
 			str = itemList[i]->getItemName();
