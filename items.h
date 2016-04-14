@@ -202,10 +202,11 @@ public:
 };
 
 class Armor : public Item {
-	int cost, armorClass, weight;
+	int cost, armorClass;
+	double weight;
 	bool stealth;
 public:
-	Armor(int n, string name, int c, int AC, bool s, int w) : Item(n, name) {
+	Armor(int n, string name, int c, int AC, bool s, double w) : Item(n, name) {
 		cost = c;
 		armorClass = AC;
 		stealth = s;
@@ -220,22 +221,31 @@ public:
 	bool getStealth() {
 		return stealth;
 	}
-	int getWeight() {
+	double getWeight() {
 		return weight;
 	}
 	string getValues() override {
+		string truefalse;
+		if (stealth) {
+			truefalse = "true";
+		}
+		else {
+			truefalse = "false";
+		}
 		stringstream sstr;
-		sstr << getItemName() << "\n" << "Cost: " << cost << "\n" << "Armor Class: " << armorClass << "\n" <<
+		sstr << getItemName() << "\n" << "Cost in copper: " << cost << "\n" << "Armor Class: " << armorClass << "\n" <<
 			"Stealth: " << stealth << "\n" << "Weight: " << weight << "\n" << endl;
 		return sstr.str();
 	}
 };
 
 class Weapon : public Item {
-	int cost, damage, weight;
+	int cost;
+	double weight;
+	string damage;
 	bool isRanged;
 public:
-	Weapon(int n, string name, int c, int d, int w, bool r) : Item(n, name) {
+	Weapon(int n, string name, int c, string d, double w, bool r) : Item(n, name) {
 		cost = c;
 		damage = d;
 		weight = w;
@@ -244,28 +254,35 @@ public:
 	int getCost() {
 		return cost;
 	}
-	int getDamage() {
+	string getDamage() {
 		return damage;
 	}
-	int getWeight() {
+	double getWeight() {
 		return weight;
 	}
 	bool getRange() {
 		return isRanged;
 	}
 	string getValues() override {
+		string truefalse;
+		if(isRanged) {
+			truefalse = "true";
+		} else {
+			truefalse = "false";
+		}
 		stringstream sstr;
-		sstr << getItemName() << "\n" << "Cost: " << cost << "\n" << "Damage: " << damage << "\n" <<
-			"Weight: " << weight << "\n" << "Ranged: " << isRanged << "\n" << endl;
+		sstr << getItemName() << "\n" << "Cost in copper: " << cost << "\n" << "Damage description: " << damage << "\n" <<
+			"Weight: " << weight << "\n" << "Ranged: " << truefalse << "\n" << endl;
 		return sstr.str();
 	}
 };
 
 class Gear : public Item {
-	int cost, weight;
+	int cost;
+	double weight;
 	string description;
 public:
-	Gear(int n, string name, int c, int w, string d) : Item(n, name) {
+	Gear(int n, string name, int c, double w, string d) : Item(n, name) {
 		cost = c;
 		weight = w;
 		description = d;
@@ -276,12 +293,12 @@ public:
 	int getCost() {
 		return cost;
 	}
-	int getWeight() {
+	double getWeight() {
 		return weight;
 	}
 	string getValues() override {
 		stringstream sstr;
-		sstr << getItemName() << "\n" << "Cost: " << cost << "\n" << "Weight: " << weight << "\n" <<
+		sstr << getItemName() << "\n" << "Cost in copper: " << cost << "\n" << "Weight: " << weight << "\n" <<
 			"Description: " << description << "\n" << endl;
 		return sstr.str();
 	}
@@ -305,7 +322,27 @@ public:
 	}
 	void getValues() {
 		for (int i = 0; i < itemList.size(); i++) {
-			cout << itemList[i]->getValues() << endl;
+			cout << itemList[i]->getValues();
+		}
+	}
+	string getSpecificItem(string n) {
+		string str;
+		for (int i = 0; i < itemList.size(); i++) {
+			str = itemList[i]->getItemName();
+			if(str.compare(n) == 0) {
+				return itemList[i]->getValues();
+				//itemList[i]->getValues();
+			}
+		}
+		return "Item not found";
+	}
+	void removeSpecificItem(string n) {
+		string str;
+		for (int i = 0; i < itemList.size(); i++) {
+			str = itemList[i]->getItemName();
+			if (str.compare(n) == 0) {
+				itemList.erase(itemList.begin()+i);
+			}
 		}
 	}
 };
