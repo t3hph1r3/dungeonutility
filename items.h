@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <fstream>
 
 using namespace std;
 
@@ -80,7 +81,7 @@ public:
 	}
 	string getValues() override {
 		stringstream sstr;
-		sstr << getItemName() << "\n" << "Copper: " << copper << "\n" << "Silver: " << silver << "\n" <<
+		sstr << getNumItems() << " " << getItemName() << "\n" << "Copper: " << copper << "\n" << "Silver: " << silver << "\n" <<
 			"Electrum: " << electrum << "\n" << "Gold: " << gold << "\n" <<
 			"Platinum: " << platinum << "\n" << "Total value in copper: " << getValueInCopper() << "\n" << endl;
 		return sstr.str();
@@ -233,8 +234,8 @@ public:
 			truefalse = "false";
 		}
 		stringstream sstr;
-		sstr << getItemName() << "\n" << "Cost in copper: " << cost << "\n" << "Armor Class: " << armorClass << "\n" <<
-			"Stealth: " << stealth << "\n" << "Weight: " << weight << "\n" << endl;
+		sstr << getNumItems() << " " << getItemName() << "\n" << "Cost in copper: " << cost << "\n" << "Armor Class: " << armorClass << "\n" <<
+			"Stealth: " << truefalse << "\n" << "Weight: " << weight << "\n" << endl;
 		return sstr.str();
 	}
 };
@@ -271,7 +272,7 @@ public:
 			truefalse = "false";
 		}
 		stringstream sstr;
-		sstr << getItemName() << "\n" << "Cost in copper: " << cost << "\n" << "Damage description: " << damage << "\n" <<
+		sstr << getNumItems() << " " << getItemName() << "\n" << "Cost in copper: " << cost << "\n" << "Damage description: " << damage << "\n" <<
 			"Weight: " << weight << "\n" << "Ranged: " << truefalse << "\n" << endl;
 		return sstr.str();
 	}
@@ -298,7 +299,7 @@ public:
 	}
 	string getValues() override {
 		stringstream sstr;
-		sstr << getItemName() << "\n" << "Cost in copper: " << cost << "\n" << "Weight: " << weight << "\n" <<
+		sstr << getNumItems() <<" "<< getItemName() << "\n" << "Cost in copper: " << cost << "\n" << "Weight: " << weight << "\n" <<
 			"Description: " << description << "\n" << endl;
 		return sstr.str();
 	}
@@ -343,6 +344,78 @@ public:
 				itemList.erase(itemList.begin()+i);
 			}
 		}
+	}
+	void saveFile() { //saves string of getValues() to text file "DDsave.txt"
+		ofstream save("DDsave.txt");
+		string str;
+		for(int i = 0; i < itemList.size(); i++) {
+			str += itemList[i]->getValues();
+		}
+		save << str;
+		save.close();
+	}
+	void openFile() { //reads "DDsave.txt" and creates specific item objects based off item names in file
+		ifstream open("DDsave.txt");
+		int counter = 1, numItems=0;
+		string string, name, var1 = "", var2 = "", var3 = "", var4 = "", var5 = "", var6 = "";
+		bool truefalse = false;
+		while(getline(open,string)) {
+			if(counter==1) {
+				numItems = stoi(string.substr(0, string.find(" ")));
+				string = string.substr(string.find(" ") + 1);
+				name = string;
+			}
+			string = string.substr(string.find(":") + 1);
+			string = string.substr(string.find(" ") + 1);
+			if(counter == 2) {
+				var1 = string;
+			}
+			if (counter == 3) {
+				var2 = string;
+			}
+			if (counter == 4) {
+				var3 = string;
+			}
+			if (counter == 5) {
+				var4 = string;
+			}
+			if (counter == 6) {
+				var5 = string;
+			}
+			if (counter == 7) {
+				var6 = string;
+			}
+			counter++;
+			if(string.compare("") == 0) {
+				if(!var6.empty()) {
+					addItem(new Coinage(numItems, name, stoi(var1), stoi(var2), stoi(var3), stoi(var4), stoi(var5)));
+				}
+				if(var5.empty() && (!var4.empty())) {
+					if(var3.compare("true") == 0 || var3.compare("false") == 0) {
+						if(var3.compare("true") == 0) {
+							truefalse = true;
+						}else {
+							truefalse = false;
+						}
+						addItem(new Armor(numItems, name, stoi(var1), stoi(var2), truefalse, stod(var4)));
+					}else {
+						if (var4.compare("true") == 0) {
+							truefalse = true;
+						}
+						else {
+							truefalse = false;
+						}
+						addItem(new Weapon(numItems, name, stoi(var1), var2, stod(var3), truefalse));
+					}
+				}
+				if(var4.empty() && var5.empty() && var6.empty()) {
+					addItem(new Gear(numItems,name,stoi(var1),stod(var2),var3));
+				}
+				counter = 1;
+				var1 = ""; var2 = ""; var3 = ""; var4 = ""; var5 = ""; var6 = "";
+			}
+		}
+		open.close();
 	}
 };
 
