@@ -27,22 +27,19 @@ public:
 
 class DiceParse{
 protected:
-    string rawText;
-    string formattedText;
-
     string instructions = "Enter dice in the format: 1d20+5";
 
     //Regex instructions.
-    string rgx_Dice = "[0-9]+d[0-9]{1,3}[+-]?[0-9]*";
+    const string rgx_Dice = "[0-9]+d[0-9]{1,3}[+-]?[0-9]*";
 
-    regex primaryDice(rgx_Dice);
+    regex stdDice;
 
 public:
-    
-
+    DiceParse() : stdDice(rgx_Dice){}
+    string extractRolls(string s); //sorts through string to get individual calls for dice rolls in format 2d20+5
 };
 
-
+//Dice Functions:
 int Dice::roll(int sides) {
     int check = rand();
     //std::cout << check << std::endl;
@@ -83,6 +80,12 @@ int* Dice::att(int bonus) {
     return att;
 }
 
+//DiceParse functions:
+string DiceParse::extractRolls(string s){
+    regex_iterator<std::string::iterator> iter(s.begin(), s.end(), stdDice);
+    regex_iterator<std::string::iterator> itend;
+
+
+}
 
 #endif //DUNGEONUTILITY_DICE_H
-
