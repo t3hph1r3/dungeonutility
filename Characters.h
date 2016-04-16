@@ -3,11 +3,11 @@
 #include <limits>
 #include <vector>
 #include <string> 
+#include <sstream>
+#include <fstream>
 #include "dice.h"
 #include "items.h"
-//#include "items.h"
-using namespace std;
-// by the by... do-while-s are pretty good at saving lines xD
+
 class Character {
 private:
 	int bstr, bdex, bcon, bintel, bwis, bchar; //base stats
@@ -18,7 +18,7 @@ private:
 	int expertise = 0; //skill counter
 	int languages = 0; //how many languages the character can speak 
 	string spoken = "Common ";//need to set languages, one is always taken up by Common
-	int lvl, exp; //leveling 
+	int lvl, exp, profBonus; //leveling 
 	string race, gender, background, morals, classType, toolprof, armorprof, weaponprof;
 	string skillList;
 	string hitDice; //hitDice in the format #dice+dice type e.g. 1d10
@@ -36,6 +36,8 @@ private:
 	void setClass();
 	void setSkills();
 
+	void levelUp();
+
 	int statExist(int[], int);
 	int statExist(string[], int);
 	int calcMod(int);
@@ -44,6 +46,8 @@ public:
 	Character();
 	void displayStats();
 	void charInfo();
+	string getName();
+	void saveCharacter();
 };
 
 Character::Character() {
@@ -58,10 +62,12 @@ Character::Character() {
 	Character::setSkills();
 	lvl = 1;
 	exp = 0;
+	profBonus = 2;
 }
 
 void Character::setName() {
-
+	cout << "What is the name of your Character?" << endl;
+	cin >> name;
 }
 void Character::setBStats() {
 	int statChoice[6];
@@ -107,7 +113,7 @@ void Character::setBStats() {
 	}
 	bstr = statChoice[statExist(statChoice, choice)];
 	statChoice[statExist(statChoice, choice)] = 0;
-
+	cout << endl;
 	//assigning to dex
 	cout << "The following numbers can each be assigned to dexterity: ";
 	for (int x = 0; x < 6; x++) {
@@ -846,7 +852,7 @@ void Character::setSkills() {
 				cout << x << ". " << skills[x] << endl;
 			}
 		}
-		cout << "From the list, pick skill #" << x << ": ";
+		cout << "From the list, pick skill #" << x+1 << ": ";
 		cin >> choice;
 		while (!cin || statExist(skills, choice) == -1 || cin.fail()) {
 			cin.clear();
@@ -864,6 +870,40 @@ void Character::setSkills() {
 	}
 }
 
+void Character::levelUp() {
+	//increasing proficiency bonus as needed
+	if (lvl == 1 || lvl == 4) {
+		profBonus = 2;
+	}
+	if (lvl == 5 || lvl == 8) {
+		profBonus = 3;
+	}
+	if (lvl == 9 || lvl == 12) {
+		profBonus = 4;
+	}
+	if (lvl == 13 || lvl == 16) {
+		profBonus = 5;
+	}
+	if (lvl == 17 || lvl == 20) {
+		profBonus = 6;
+	}
+	//class specific leveling
+	//leveling for a cleric
+	srand(time(NULL));
+	if (classType == "Cleric") {
+		hp += Dice::roll(8) + mcon;
+	}
+	if (classType == "Fighter") {
+		hp += Dice::roll(10) + mcon;
+	}
+	if (classType == "Rogue") {
+		hp += Dice::roll(8) + mcon;
+	}
+	if (classType == "Wizard") {
+		hp += Dice::roll(6) + mcon;
+	}
+}
+
 int Character::statExist(int a[], int check) {
 	for (int x = 0; x < 6; x++) {
 		if (a[x] == check) {
@@ -873,7 +913,7 @@ int Character::statExist(int a[], int check) {
 	return -1;
 }
 int Character::statExist(string a[], int check) {
-	if (check > 17 || check < 1) {
+	if (check > 17 || check < 0) {
 		return -1;
 	}
 	if (a[check].find("Taken") != -1) {
@@ -882,12 +922,12 @@ int Character::statExist(string a[], int check) {
 	return check;
 }
 void Character::displayStats() {
-	cout << "Strength: " << bstr << endl;
-	cout << "Dexterity: " << bdex << endl;
-	cout << "Constitution: " << bcon << endl;
-	cout << "Intelligence: " << bintel << endl;
-	cout << "Wisdom: " << bwis << endl;
-	cout << "Charisma: " << bchar << endl;
+	cout << "Strength: " << bstr <<" Modifier: "<<mstr<< endl;
+	cout << "Dexterity: " << bdex << " Modifier: " << mdex << endl;
+	cout << "Constitution: " << bcon << " Modifier: " << mcon << endl;
+	cout << "Intelligence: " << bintel << " Modifier: " << mintel << endl;
+	cout << "Wisdom: " << bwis << " Modifier: " << mwis << endl;
+	cout << "Charisma: " << bchar << " Modifier: " << mchar << endl;
 	cout << endl;
 }
 void Character::charInfo() {
@@ -952,4 +992,33 @@ int Character::calcMod(int x) {
 	if (x == 30) {
 		return 10;
 	}
+}
+string Character::getName() {
+	return name;
+}
+
+void Character::saveCharacter() {
+	string saveName = name + ".txt";
+	string saveLine, saveLine2;
+	string newLine = "\n";
+	string out;
+	ofstream save(saveName);
+	save << "Character Name: " + name + "\n";
+	save << "Strength: " + to_string(bstr) << " Modifier: " + to_string(mstr) + "\n";
+	save << "Dexterity: " + to_string(bdex) << " Modifier: " + to_string(mdex) + "\n";
+	save << "Constitution: " + to_string(bcon) << " Modifier: " + to_string(mcon) + "\n";
+	save << "Intelligence: " + to_string(bintel) << " Modifier: " + to_string(mintel) + "\n";
+	save << "Wisdom: " + to_string(bwis) << " Modifier: " + to_string(mwis) + "\n";
+	save << "Charisma: " + to_string(bchar) << " Modifier: " + to_string(mchar) + "\n";
+	save << "Race: " + race + "\n";
+	save << "Gender: " + gender + "\n";
+	save << "Alignment: " + morals + "\n";
+	save << "Background: " + background + "\n";
+	save << "Tool Proficiency: " + toolprof + "\n";
+	save << "Armor Proficiency: " + armorprof + "\n";
+	save << "Weapon Proficiency: " + weaponprof + "\n";
+	save << "Class: " + classType + "\n";
+	save << "Number of Languages: " + to_string(languages) + "\n";
+	save << "Skill List: " + skillList + "\n";
+	save.close();
 }
