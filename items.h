@@ -345,6 +345,36 @@ public:
 			}
 		}
 	}
+	void orderList() {
+		vector<Item*> newList;
+		int counter = 0;
+		string str;
+		for (int i = 0; i < itemList.size(); i++) {
+			str = itemList[i]->getItemName();
+			if (str.compare("Coins") == 0) {
+				newList.push_back(itemList[i]);
+			}
+		}
+		for (int i = 0; i < itemList.size(); i++) {
+			str = itemList[i]->getItemName();
+			if (str.compare("Leather armor") == 0 || str.compare("Chain Mail") == 0 || str.compare("Scale Mail") == 0) {
+				newList.push_back(itemList[i]);
+			}
+		}
+		for (int i = 0; i < itemList.size(); i++) {
+			str = itemList[i]->getItemName();
+			if (str.compare("Shield") == 0 || str.compare("Shield") == 0) {
+				newList.push_back(itemList[i]);
+			}
+		}
+		for (int i = 0; i < itemList.size(); i++) {
+			str = itemList[i]->getItemName();
+			if (str.compare("Coins") != 0 && str.compare("Leather armor") != 0 && str.compare("Chain Mail") != 0 && str.compare("Scale Mail") != 0 && str.compare("Shield") != 0 && str.compare("Shield") != 0) {
+				newList.push_back(itemList[i]);
+			}
+		}
+		itemList.swap(newList);
+	}
 	void saveFile() { //saves string of getValues() to text file "DDsave.txt"
 		ofstream save("DDsave.txt");
 		string str;
@@ -419,4 +449,4 @@ public:
 	}
 };
 
-#endif DUNGEONUTILITY_ITEMS_H 
+#endif DUNGEONUTILITY_ITEMS_H
