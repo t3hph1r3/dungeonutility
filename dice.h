@@ -8,8 +8,12 @@
 
 #include <iostream>
 #include <time.h>
+#include <regex>
+#include <string>
 #include <stdlib.h>
 #include <stdio.h>
+
+using namespace std;
 
 class Dice{
 
@@ -21,10 +25,27 @@ public:
     static int* att(int bonus);       //Attack roll with d20 (alerts if 1 or 20), adds 'bonus' to roll.
 };
 
+class DiceParse{
+protected:
+    string rawText;
+    string formattedText;
+
+    string instructions = "Enter dice in the format: 1d20+5";
+
+    //Regex instructions.
+    string rgx_Dice = "[0-9]+d[0-9]{1,3}[+-]?[0-9]*";
+
+    regex primaryDice(rgx_Dice);
+
+public:
+    
+
+};
+
 
 int Dice::roll(int sides) {
     int check = rand();
-    std::cout << check << std::endl;
+    //std::cout << check << std::endl;
     if(check == 1804289383){srand((unsigned int) time(NULL));} //Checks for default rand() seed and reseeds.
     int result = ((rand() % sides) + 1);
     if (result < 0) {result = result * -1;}
