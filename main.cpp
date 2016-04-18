@@ -20,13 +20,14 @@ int main() {
 		cout << "(2) Random Encounter Generation" << endl;
 		cout << "(3) Character Generaton" << endl;
 		cout << "(4) Display Character Information" << endl;
-		cout << "(5) Dice Roller" << endl;
-		cout << "(6) Exit." << endl;
+		cout << "(5) Load/Save Game" << endl;
+		cout << "(6) Dice Roller" << endl;
+		cout << "(7) Exit." << endl;
 		cout << "\nChoice: ";
 		cin >> choice;
 
-		if(cin.fail() || choice > 6 || choice < 1 || !cin){
-			while (!cin || choice > 6 || choice < 1 || cin.fail()) {
+		if(cin.fail() || choice > 7 || choice < 1 || !cin){
+			while (!cin || choice > 7 || choice < 1 || cin.fail()) {
 				cin.clear();
 				cin.ignore(numeric_limits<streamsize>::max(), '\n');
 				cout << "\nInvalid input!" << endl;
@@ -70,7 +71,6 @@ int main() {
 			}
 			else {
 				cout << "You already have the maximum amount of characters! (5 characters)" << endl;
-
 			}
 		}
 		if (choice == 4) {
@@ -78,7 +78,7 @@ int main() {
 				for (int i = 0; i < numOfCharacter; i++) {
 					cout<< "(" << i+1 << ") " << characterArray[i]->getName() << "\n";
 				}
-				cout << "What charcater would you like to see info for?" << endl;
+				cout << "Which charcater would you like to see info for?" << endl;
 				int charChoice;
 				cout << "Choice: ";
 				cin >> charChoice;
@@ -98,6 +98,48 @@ int main() {
 			}
 		}
 		if (choice == 5) {
+			int x;
+			cout << "What would you like to do?\n(1) Load\n(2) Save \n\nChoice: ";
+			cin >> x;
+			while (!cin || x > 2 || x < 1 || cin.fail()) {
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				cout << "\nInvalid input!" << endl;
+				cout << "What would you like to do?" << endl;
+				cin >> x;
+			}
+			if (x == 1) {
+				string charName;
+				cout << "To load a character, type its name. (Case Sensitive)" << endl;
+				cout << "Name : ";
+				cin >> charName;
+				if (numOfCharacter == 0) {
+					numOfCharacter++;
+					characterArray[numOfCharacter-1]->loadCharacter(charName);
+				}
+				else if (numOfCharacter >= 1 && numOfCharacter < 5) {
+					numOfCharacter++;
+					characterArray[numOfCharacter-1]->loadCharacter(charName);
+				}
+				else {
+					cout << "You have already reached the maximum amount of characters." << endl;
+				}
+			}
+			if (x == 2) {
+				if (numOfCharacter > 0) {
+					for (int i = 0; i < numOfCharacter; i++) {
+						cout << "(" << i + 1 << ") " << characterArray[i]->getName() << "\n";
+						characterArray[i]->saveCharacter();
+					}
+					cout << "The characters listed above were saved to individual text files." << endl;
+				}
+				if (numOfCharacter == 0) {
+					cout << "You have no characters to save!" << endl;
+					cout << "Nothing will be saved." << endl;
+				}
+			}
+		}
+		if (choice == 6) {
 			int sides;
 			int times;
 			int modifiers;
@@ -150,7 +192,7 @@ int main() {
 			}
 			cout << "\nYou rolled d(" << sides << ") " << times << " times. Your total roll was " << roll << "." << endl;
 		}
-		if (choice == 6) {
+		if (choice == 7) {
 			cout << "Goodbye." << endl;
 			break;
 		}
