@@ -954,6 +954,7 @@ void Character::charInfo() {
 	cout << "Class: " << classType << endl;
 	cout << "Number of Languages: " << languages << endl;
 	cout << "Skill List: " << skillList << endl;
+	cout << endl;
 }
 int Character::calcMod(int x) {
 	if (x == 1) {
@@ -1041,7 +1042,16 @@ void Character::loadCharacter(string n) {
 	int counter = 0;
 	string fileName = n + ".txt";
 	string line, possible;
-	ifstream file(fileName);
+	ifstream file;
+	file.open(fileName);
+	while (!file) {
+		cout << "No file exists." << endl;
+		cout << "To load a character, type its name. (Case Sensitive)" << endl;
+		cout << "Name : ";
+		cin >> possible;
+		fileName = possible + ".txt";
+		file.open(fileName);
+	}
 	while (getline(file, line)) {
 		if (counter == 0) {
 			name = line.substr(line.find(":") + 2);
