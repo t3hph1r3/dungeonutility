@@ -375,8 +375,8 @@ public:
 		}
 		itemList.swap(newList);
 	}
-	void saveFile() { //saves string of getValues() to text file "DDsave.txt"
-		ofstream save("DDsave.txt");
+	void saveFile(string n) { //saves string of getValues() to text file "DDsave.txt"
+		ofstream save(n);
 		string str;
 		for(int i = 0; i < itemList.size(); i++) {
 			str += itemList[i]->getValues();
@@ -384,8 +384,8 @@ public:
 		save << str;
 		save.close();
 	}
-	void openFile() { //reads "DDsave.txt" and creates specific item objects based off item names in file
-		ifstream open("DDsave.txt");
+	void openFile(string n) { //reads "DDsave.txt" and creates specific item objects based off item names in file
+		ifstream open(n);
 		int counter = 1, numItems=0;
 		string string, name, var1 = "", var2 = "", var3 = "", var4 = "", var5 = "", var6 = "";
 		bool truefalse = false;
