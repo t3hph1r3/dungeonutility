@@ -8,10 +8,11 @@
 
 #include <iostream>
 #include <time.h>
-#include <regex>
+#include <sstream>
 #include <string>
 #include <stdlib.h>
 #include <stdio.h>
+#include <vector>
 
 using namespace std;
 
@@ -23,21 +24,22 @@ public:
     static int* rollMore(int times, int sides);     //Generates 'times' random numbers between 1 and 'sides.'
     static int abilityScore();      //Generates standard ability scores using 4d6 drop the lowest roll method.
     static int* att(int bonus);       //Attack roll with d20 (alerts if 1 or 20), adds 'bonus' to roll.
+    static void parseAndRoll(string s);
 };
 
-class DiceParse{
-protected:
-    string instructions = "Enter dice in the format: 1d20+5";
-
-    //Regex instructions.
-    const string rgx_Dice = "[0-9]+d[0-9]{1,3}[+-]?[0-9]*";
-
-    regex stdDice;
-
-public:
-    DiceParse() : stdDice(rgx_Dice){}
-    string extractRolls(string s); //sorts through string to get individual calls for dice rolls in format 2d20+5
-};
+//class DiceParse{
+//protected:
+//    //string instructions = "Enter dice in the format: 1d20+5";
+//
+//    //Regex instructions.
+//    //const string rgx_Dice = "[0-9]+d[0-9]{1,3}[+-]?[0-9]*";
+//
+//    //regex stdDice;
+//
+//public:
+//    //DiceParse() : stdDice("[0-9]+d[0-9]{1,3}[+-]?[0-9]*"){}
+//    vector<string> extractRolls(string s); //sorts through string to get individual calls for dice rolls in format 2d20+5
+//};
 
 //Dice Functions:
 int Dice::roll(int sides) {
@@ -81,9 +83,42 @@ int* Dice::att(int bonus) {
 }
 
 //DiceParse functions:
-string DiceParse::extractRolls(string s){
-    regex_iterator<std::string::iterator> iter(s.begin(), s.end(), stdDice);
-    regex_iterator<std::string::iterator> itend;
+//vector<string> DiceParse::extractRolls(string s){
+//    vector<string> rollStrings;
+//
+////    smatch matched;
+////    regex_match(s, matched, stdDice);
+//
+//
+///*    regex_iterator<std::string::iterator> iter(s.begin(), s.end(), stdDice);
+//    regex_iterator<std::string::iterator> itend;
+//
+//    while(iter != itend){
+//        rollStrings.push_back(iter->str());
+//        cout << iter->str();
+//        iter++;
+//    }*/
+//
+//    return rollStrings;
+//}
+
+void Dice::parseAndRoll(string s){
+    string instruct = "Enter dice in the format: 1d20+5";
+    string digits = "0123456789";
+    string operators = "d+-";
+
+    int num, sides, bonus;
+    string pnum, psides, pbonus = "";
+
+    size_t error = s.find_first_not_of(digits + operators);
+    if(error != string::npos){cout << instruct << endl; return;}
+
+    size_t dSpot = s.find_first_of("d");
+    if(dSpot = string::npos){cout << instruct << endl; return;}
+
+    dSpot = s.find_first_of("d", dSpot+1);
+    if(dSpot != string::npos){cout << instruct << endl; return;}
+
 
 
 }
