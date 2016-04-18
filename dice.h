@@ -119,6 +119,8 @@ void Dice::parseAndRoll(string s){
     dSpot = s.find_first_of("d", dSpot+1);
     if(dSpot != string::npos){cout << instruct << endl; return;}
 
+    size_t digit = s.find_first_of(digits);
+
 
 
 }
