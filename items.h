@@ -336,6 +336,24 @@ public:
 		}
 		return "Item not found";
 	}
+	int getArmorClass() {
+		string str, itemStr;
+		for (int i = 0; i < itemList.size(); i++) {
+			str = itemList[i]->getItemName();
+			if (str.compare("Leather armor") == 0 || str.compare("Chain Mail") == 0 || str.compare("Scale Mail") == 0) {
+				itemStr = itemList[i]->getValues();
+				cout << "Item String: " << itemStr << endl;
+				itemStr = itemStr.substr(itemStr.find(":")+2);
+				itemStr = itemStr.substr(itemStr.find(":") + 2,2);
+				if(stoi(itemStr)>=10 && stoi(itemStr) <= 99) {
+					return stoi(itemStr);
+				} else {
+					return stoi(itemStr.substr(0, 1));
+				}
+			}
+		}
+		return -1;
+	}
 	void removeSpecificItem(string n) { //removes specified item (by item name) from vector
 		string str;
 		for (int i = 0; i < itemList.size(); i++) {
