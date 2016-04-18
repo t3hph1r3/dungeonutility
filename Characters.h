@@ -10,7 +10,7 @@
 
 class Character {
 private:
-	int bstr, bdex, bcon, bintel, bwis, bchar; //base stats
+	int bstr = 0, bdex = 0, bcon = 0, bintel = 0, bwis = 0, bchar = 0; //base stats
 	int mstr = 0, mdex = 0, mcon = 0, mintel = 0, mwis = 0, mchar = 0; //base stat modifiers
 	int hp, speed;
 	int armorClass;//will need to organize equipment in order to calculate AC correctly.
@@ -44,10 +44,14 @@ private:
 
 public:
 	Character();
+	Character(string);
 	void displayStats();
 	void charInfo();
 	string getName();
 	void saveCharacter();
+	void loadCharacter(string);
+
+	string getLvl();
 };
 
 Character::Character() {
@@ -63,6 +67,10 @@ Character::Character() {
 	lvl = 1;
 	exp = 0;
 	profBonus = 2;
+}
+
+Character::Character(string n) {
+	Character::loadCharacter(n);
 }
 
 void Character::setName() {
@@ -86,6 +94,7 @@ void Character::setBStats() {
 		cout << statChoice[x] << " ";
 
 	}
+	cout << endl;
 	cout << endl;
 	//assigning to strength
 	cout << "The following numbers can each be assigned to strength: ";
@@ -140,7 +149,7 @@ void Character::setBStats() {
 	}
 	bdex = statChoice[statExist(statChoice, choice)];
 	statChoice[statExist(statChoice, choice)] = 0;
-
+	cout << endl;
 	//assigning to constitution
 	cout << "The following numbers can each be assigned to constitution: ";
 	for (int x = 0; x < 6; x++) {
@@ -167,7 +176,7 @@ void Character::setBStats() {
 	}
 	bcon = statChoice[statExist(statChoice, choice)];
 	statChoice[statExist(statChoice, choice)] = 0;
-
+	cout << endl;
 	//assigning to intelligence
 	cout << "The following numbers can each be assigned to intelligence: ";
 	for (int x = 0; x < 6; x++) {
@@ -194,7 +203,7 @@ void Character::setBStats() {
 	}
 	bintel = statChoice[statExist(statChoice, choice)];
 	statChoice[statExist(statChoice, choice)] = 0;
-
+	cout << endl;
 	//assigning to wisdom
 	cout << "The following numbers can each be assigned to wisdom: ";
 	for (int x = 0; x < 6; x++) {
@@ -852,7 +861,7 @@ void Character::setSkills() {
 				cout << x << ". " << skills[x] << endl;
 			}
 		}
-		cout << "From the list, pick skill #" << x+1 << ": ";
+		cout << "From the list, pick skill #" << x + 1 << ": ";
 		cin >> choice;
 		while (!cin || statExist(skills, choice) == -1 || cin.fail()) {
 			cin.clear();
@@ -923,7 +932,7 @@ int Character::statExist(string a[], int check) {
 	return check;
 }
 void Character::displayStats() {
-	cout << "Strength: " << bstr <<" Modifier: "<<mstr<< endl;
+	cout << "Strength: " << bstr << " Modifier: " << mstr << endl;
 	cout << "Dexterity: " << bdex << " Modifier: " << mdex << endl;
 	cout << "Constitution: " << bcon << " Modifier: " << mcon << endl;
 	cout << "Intelligence: " << bintel << " Modifier: " << mintel << endl;
@@ -1025,5 +1034,89 @@ void Character::saveCharacter() {
 	save << "Class: " + classType + "\n";
 	save << "Number of Languages: " + to_string(languages) + "\n";
 	save << "Skill List: " + skillList + "\n";
+	inventory.saveFile(name);
 	save.close();
+}
+void Character::loadCharacter(string n) {
+	int counter = 0;
+	string fileName = n + ".txt";
+	string line, possible;
+	ifstream file(fileName);
+	while (getline(file, line)) {
+		if (counter == 0) {
+			name = line.substr(line.find(":") + 2);
+		}
+		if (counter == 1) {
+			lvl = stoi(line.substr(line.find(":") + 2));
+		}
+		if (counter == 2) {
+			profBonus = stoi(line.substr(line.find(":") + 2));
+		}
+		if (counter == 3) {
+			bstr = stoi(line.substr((line.find(":") + 2), (line.find(":") + 4)));
+			line = line.substr((line.find(":") + 2));
+			mstr = stoi(line.substr(line.find(":") + 2));
+		}
+		if (counter == 4) {
+			bdex = stoi(line.substr((line.find(":") + 2), (line.find(":") + 4)));
+			line = line.substr((line.find(":") + 2));
+			mdex = stoi(line.substr(line.find(":") + 2));
+		}
+		if (counter == 5) {
+			bcon = stoi(line.substr((line.find(":") + 2), (line.find(":") + 4)));
+			line = line.substr((line.find(":") + 2));
+			mcon = stoi(line.substr(line.find(":") + 2));
+		}
+		if (counter == 6) {
+			bintel = stoi(line.substr((line.find(":") + 2), (line.find(":") + 4)));
+			line = line.substr((line.find(":") + 2));
+			mintel = stoi(line.substr(line.find(":") + 2));
+		}
+		if (counter == 7) {
+			bwis = stoi(line.substr((line.find(":") + 2), (line.find(":") + 4)));
+			line = line.substr((line.find(":") + 2));
+			mwis = stoi(line.substr(line.find(":") + 2));
+		}
+		if (counter == 8) {
+			bchar = stoi(line.substr((line.find(":") + 2), (line.find(":") + 4)));
+			line = line.substr((line.find(":") + 2));
+			mchar = stoi(line.substr(line.find(":") + 2));
+		}
+		if (counter == 9) {
+			race = line.substr(line.find(":") + 2);
+		}
+		if (counter == 10) {
+			gender = line.substr(line.find(":") + 2);
+		}
+		if (counter == 11) {
+			morals = line.substr(line.find(":") + 2);
+		}
+		if (counter == 12) {
+			background = line.substr(line.find(":") + 2);
+		}
+		if (counter == 13) {
+			toolprof = line.substr(line.find(":") + 2);
+		}
+		if (counter == 14) {
+			armorprof = line.substr(line.find(":") + 2);
+		}
+		if (counter == 15) {
+			weaponprof = line.substr(line.find(":") + 2);
+		}
+		if (counter == 16) {
+			classType = line.substr(line.find(":") + 2);
+		}
+		if (counter == 17) {
+			languages = stoi(line.substr(line.find(":") + 2));
+		}
+		if (counter == 18) {
+			skillList = line.substr(line.find(":") + 2);
+		}
+		counter++;
+	}
+	inventory.openFile(n);
+}
+
+string Character::getLvl() {
+	return to_string(lvl);
 }
