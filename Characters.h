@@ -872,6 +872,7 @@ void Character::setSkills() {
 
 void Character::levelUp() {
 	//increasing proficiency bonus as needed
+	lvl++;
 	if (lvl == 1 || lvl == 4) {
 		profBonus = 2;
 	}
@@ -932,6 +933,8 @@ void Character::displayStats() {
 }
 void Character::charInfo() {
 	cout << "Character Name: " << name << endl;
+	cout << "Level: " << lvl << endl;
+	cout << "Proficiency Bonus: " << profBonus << endl;
 	cout << "Race: " << race << endl;
 	cout << "Gender: " << gender << endl;
 	cout << "Alignment: " << morals << endl;
@@ -1004,6 +1007,8 @@ void Character::saveCharacter() {
 	string out;
 	ofstream save(saveName);
 	save << "Character Name: " + name + "\n";
+	save << "Level: " + to_string(lvl) + "\n";
+	save << "Proficiency Bonus: " + to_string(profBonus) + "\n";
 	save << "Strength: " + to_string(bstr) << " Modifier: " + to_string(mstr) + "\n";
 	save << "Dexterity: " + to_string(bdex) << " Modifier: " + to_string(mdex) + "\n";
 	save << "Constitution: " + to_string(bcon) << " Modifier: " + to_string(mcon) + "\n";
