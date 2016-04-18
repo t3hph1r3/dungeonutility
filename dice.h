@@ -25,6 +25,7 @@ public:
     static int abilityScore();      //Generates standard ability scores using 4d6 drop the lowest roll method.
     static int* att(int bonus);       //Attack roll with d20 (alerts if 1 or 20), adds 'bonus' to roll.
     static void parseAndRoll(string s);
+    static void typeRoll();
 };
 
 //class DiceParse{
@@ -110,18 +111,50 @@ void Dice::parseAndRoll(string s){
     int num, sides, bonus;
     string pnum, psides, pbonus = "";
 
-    size_t error = s.find_first_not_of(digits + operators);
+    //check for improper formatting
+    size_t error = s.find_first_not_of(digits + operators);  //check for wrong characters
     if(error != string::npos){cout << instruct << endl; return;}
 
-    size_t dSpot = s.find_first_of("d");
-    if(dSpot = string::npos){cout << instruct << endl; return;}
+    size_t dSpot = s.find_first_of("d");  //find the d
+    if(dSpot == string::npos){cout << instruct << endl; return;}
 
-    dSpot = s.find_first_of("d", dSpot+1);
-    if(dSpot != string::npos){cout << instruct << endl; return;}
+    size_t dSpot_error = s.find_first_of("d", dSpot+1);
+    if(dSpot_error != string::npos){cout << instruct << endl; return;}
 
-    size_t digit = s.find_first_of(digits);
+    size_t digitSpot = s.find_first_of(digits); //make sure the start is 0
+    if(digitSpot != 0){cout << instruct << endl; return;}
+    digitSpot = s.find_first_of(digits, dSpot); //check that digits follow the d
+    if(digitSpot == string::npos){cout << instruct << endl; return;}
 
+    size_t bonusSpot = s.find_first_of("+-");
+    size_t bonusSpot_error = s.find_first_of("+-", bonusSpot+1); //ensure there is not multiple + or -
+    if(bonusSpot_error != string::npos){cout << instruct << endl; return;}
+    if(bonusSpot != string::npos && digitSpot > bonusSpot){cout << instruct << endl; return;}
 
+    pnum = s.substr(0, dSpot);
+
+    if(bonusSpot != string::npos){
+        psides = s.substr(dSpot+1, bonusSpot - dSpot - 1);
+        pbonus = s.substr(bonusSpot, s.length() - bonusSpot);
+    }
+    else{psides = s.substr(dSpot+1, s.length() - dSpot+1); cout << "else" << ends;}
+
+    num = stoi(pnum, nullptr);
+    sides = stoi(psides, nullptr);
+    bonus = stoi(pbonus, nullptr);
+
+    cout << num << "d" << sides << "+" << bonus << endl;
+    int* roll = Dice::rollMore(num,sides);
+    int total;
+    for(int i = 0; i < sides; i++){total += roll[i];}
+    total += bonus;
+
+    cout << total;
+}
+
+void Dice::typeRoll(){
+    string line;
+    cout << "Roll (eg 1d6+10): " << ends;
 
 }
 
