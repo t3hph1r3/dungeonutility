@@ -376,7 +376,7 @@ public:
 		itemList.swap(newList);
 	}
 	void saveFile(string n) { //saves string of getValues() to text file "DDsave.txt"
-		ofstream save(n);
+		ofstream save(n + "_inventory.txt");
 		string str;
 		for(int i = 0; i < itemList.size(); i++) {
 			str += itemList[i]->getValues();
@@ -385,7 +385,7 @@ public:
 		save.close();
 	}
 	void openFile(string n) { //reads "DDsave.txt" and creates specific item objects based off item names in file
-		ifstream open(n);
+		ifstream open(n+"_inventory.txt");
 		int counter = 1, numItems=0;
 		string string, name, var1 = "", var2 = "", var3 = "", var4 = "", var5 = "", var6 = "";
 		bool truefalse = false;
