@@ -143,19 +143,25 @@ void Dice::parseAndRoll(string s){
     sides = stoi(psides, nullptr);
     bonus = stoi(pbonus, nullptr);
 
-    cout << num << "d" << sides << "+" << bonus << endl;
+    cout << num << "d" << sides << ": " << ends;
     int* roll = Dice::rollMore(num,sides);
-    int total;
-    for(int i = 0; i < sides; i++){total += roll[i];}
+    int total = 0;
+    for(int i = 0; i < num; i++){total += roll[i]; cout << "[" << roll[i] << "]" << "+" << ends;}
     total += bonus;
 
-    cout << total;
+    cout << bonus << " = " << total << endl;
 }
 
 void Dice::typeRoll(){
     string line;
-    cout << "Roll (eg 1d6+10): " << ends;
+    string instruct = "Roll (eg. 1d6+10). Type 'exit' to end: ";
 
+    cout << instruct << ends;
+    while(getline(cin, line)){
+        if(line.compare("exit") == 0){return;}
+        else(Dice::parseAndRoll(line));
+        cout << instruct << ends;
+    }
 }
 
 #endif //DUNGEONUTILITY_DICE_H
