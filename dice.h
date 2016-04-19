@@ -8,7 +8,6 @@
 
 #include <iostream>
 #include <time.h>
-#include <sstream>
 #include <string>
 #include <stdlib.h>
 #include <stdio.h>
@@ -28,21 +27,6 @@ public:
     static void typeRoll();
 };
 
-//class DiceParse{
-//protected:
-//    //string instructions = "Enter dice in the format: 1d20+5";
-//
-//    //Regex instructions.
-//    //const string rgx_Dice = "[0-9]+d[0-9]{1,3}[+-]?[0-9]*";
-//
-//    //regex stdDice;
-//
-//public:
-//    //DiceParse() : stdDice("[0-9]+d[0-9]{1,3}[+-]?[0-9]*"){}
-//    vector<string> extractRolls(string s); //sorts through string to get individual calls for dice rolls in format 2d20+5
-//};
-
-//Dice Functions:
 int Dice::roll(int sides) {
     int check = rand();
     //std::cout << check << std::endl;
@@ -83,26 +67,6 @@ int* Dice::att(int bonus) {
     return att;
 }
 
-//DiceParse functions:
-//vector<string> DiceParse::extractRolls(string s){
-//    vector<string> rollStrings;
-//
-////    smatch matched;
-////    regex_match(s, matched, stdDice);
-//
-//
-///*    regex_iterator<std::string::iterator> iter(s.begin(), s.end(), stdDice);
-//    regex_iterator<std::string::iterator> itend;
-//
-//    while(iter != itend){
-//        rollStrings.push_back(iter->str());
-//        cout << iter->str();
-//        iter++;
-//    }*/
-//
-//    return rollStrings;
-//}
-
 void Dice::parseAndRoll(string s){
     string instruct = "Enter dice in the format: 1d20+5";
     string digits = "0123456789";
@@ -133,7 +97,7 @@ void Dice::parseAndRoll(string s){
 
     pnum = s.substr(0, dSpot);
 
-    if(bonusSpot != string::npos){
+    if(bonusSpot != string::npos){ //if there is a bonus assign values to bonus and sides
         psides = s.substr(dSpot+1, bonusSpot - dSpot - 1);
         pbonus = s.substr(bonusSpot, s.length() - bonusSpot);
     }
@@ -143,7 +107,9 @@ void Dice::parseAndRoll(string s){
     sides = stoi(psides, nullptr);
     bonus = stoi(pbonus, nullptr);
 
-    cout << num << "d" << sides << ": " << ends;
+
+
+    cout << num << "d" << sides << ": " << ends; //roll using assigned values and output
     int* roll = Dice::rollMore(num,sides);
     int total = 0;
     for(int i = 0; i < num; i++){total += roll[i]; cout << "[" << roll[i] << "]" << "+" << ends;}
@@ -152,11 +118,11 @@ void Dice::parseAndRoll(string s){
     cout << bonus << " = " << total << endl;
 }
 
-void Dice::typeRoll(){
+void Dice::typeRoll(){ //menu for parseAndRoll
     string line;
     string instruct = "Roll (eg. 1d6+10). Type 'exit' to end: ";
 
-    cout << instruct << ends;
+    cout << "Roll [number of dice]d[number of sides]+/-[bonus] (eg. 1d6+10). Type 'exit' to end: " << ends;
     while(getline(cin, line)){
         if(line.compare("exit") == 0){return;}
         else(Dice::parseAndRoll(line));
